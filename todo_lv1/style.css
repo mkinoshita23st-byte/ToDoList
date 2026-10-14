@@ -1,0 +1,36 @@
+.content {
+    margin: 60px 20%;
+}
+
+.add-task {
+    border: 1px solid #bdbdbd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.list {
+    border: 1px solid #a7a7a7;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.list hr {
+    margin-left: -20px;
+    margin-right: -20px;
+    border-color: #bebebe;
+}
+
+.task {
+    margin-top: -10px;
+    margin-bottom: -10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.task-btn {
+    text-align: right;
+}
