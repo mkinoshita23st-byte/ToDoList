@@ -17,16 +17,16 @@
             <hr style="margin-left: -20px; margin-right: -20px; border-color: #bebebe;">
             <div style="margin-bottom: 15px;">
                 <span class="form-label">タスク名</span>
-                <input type="text" id="addTask" name="task" class="form-control" placeholder="タスクを入力してください">
+                <input type="text" id="addTaskTitle" name="task" class="form-control" placeholder="タスクを入力してください" required>
             </div>
             <div class="row" style="margin-bottom: 15px;">
                 <div class="col-md-6">
                     <span class="form-label">期限日</span>
-                    <input type="date" id="dueDate" class="form-control" placeholder="年/月/日">
+                    <input type="date" min="" id="dueDate" class="form-control" placeholder="年/月/日" required>
                 </div>
                 <div class="col-md-6">
                     <span class="form-label">制限時間</span>
-                    <select id="dueTime" class="form-select">
+                    <select id="dueTime" class="form-select" required>
                         <option value="">時間を選択</option>
                     </select>
                 </div>

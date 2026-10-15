@@ -1,34 +1,93 @@
-//試し
 const addBtn = document.getElementById('addBtn');
-const addTask = document.getElementById('addTask');
-const dueDate = document.getElementById('dueDate');
-const dueTime = document.getElementById('dueTime');
+const addTaskTitle = document.getElementById('addTaskTitle');
+const addDueDate = document.getElementById('dueDate');
+const addDueTime = document.getElementById('dueTime');
 const allTasksNumber = document.getElementById('allTasksNumber');
 const incompletedTasksNumber = document.getElementById('incompletedTasksNumber');
 const completedTasksNumber = document.getElementById('completedTasksNumber');
-const keyword= document.getElementById('keyword');
+const keyword = document.getElementById('keyword');
 const statusSelect = document.getElementById('statusSelect');
 const sortSelect = document.getElementById('sortSelect');
 const taskList = document.getElementById('taskList');
 let strage = localStorage;
 let todos = JSON.parse(strage.getItem('todos')) || [];
-//期限時間に５分区切りでoptionを追加
-for (let i = 0; i < 288; i++) {
-    const totalMinutes = i * 5;
-    const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
-    const hStr = String(hours).padStart(2, '0');
-    const mStr = String(minutes).padStart(2, '0');
-    const timeText = `${hStr}:${mStr}`;
-    const option = document.createElement('option');
-    option.value = timeText;
-    option.textContent = timeText;
-    dueTime.appendChild(option);
+
+//並び順に変更した新配列生成関数
+function sortTodos(todos) {
+    let sortedTodos;
+    if (sortSelect.value === 'added') {//並び順：追加順
+        sortedTodos = todos.sort((obj1, obj2) => {
+            return obj1.createdAt - obj2.createdAt;
+        });
+    }
+    else if (sortSelect.value === 'dueAsc') {//並び順：期限が近い順
+        sortedTodos = todos.sort(function (obj1, obj2) {
+            return obj1.id - obj2.id;
+        });
+    } else {//sortSelect.value === 'dueDesc' 並び順：期限が遠い順
+        sortedTodos = todos.sort(function (obj1, obj2) {
+            return obj2.id - obj1.id;
+        });
+    }
+    //期限切れタスクを降順で配列の末尾に配置する
+    const now = new Date();
+    const validTasks = [];//有効期限内タスク
+    const expiredTasks = [];//期限切れタスク
+    sortedTodos.forEach(todo => {
+        const dueDateTime = new Date(`${todo.dueDate}T${todo.dueTime}:00`);//:00は秒
+        if (dueDateTime < now) {
+            expiredTasks.push(todo);
+        } else {
+            validTasks.push(todo);
+        }
+    });
+    expiredTasks.sort((obj1, obj2) => {//期限切れの降順
+        const due1 = new Date(`${obj1.dueDate}T${obj1.dueTime}:00`);
+        const due2 = new Date(`${obj2.dueDate}T${obj2.dueTime}:00`);
+        return due2 - due1;
+    });
+    return [...validTasks, ...expiredTasks];
 }
-//編集/保存時のその他のボタン無効化/有効化メソッド
+//キーワードと状態によるToDo一覧表示切替関数
+function updateTaskList() {
+    const sortedTodos = sortTodos(todos);
+    const now = new Date();
+    taskListの内容全削除
+    sortedTodos.forEach(todo => {
+        const li = document.getElementById(`${todo.id}`);
+        const todoTitle = todo.title;
+        if (todoTitle.includes(keyword) || keyword === '') {//キーワードの対象である場合
+            if (statusSelect.value === 'all') {//状態：すべて
+                li.classList.remove('d-none');
+            } else if (statusSelect.value === 'incompleted') {//状態：未完了
+                if (!todo.completed) {
+                    li.classList.remove('d-none');
+                } else {
+                    li.classList.add('d-none');
+                }
+            } else {//statusSelect.value === 'completed'　状態：完了
+                if (todo.completed) {
+                    li.classList.remove('d-none');
+                } else {
+                    li.classList.add('d-none');
+                }
+            }
+        } else {//キーワードの対象でない場合
+            li.classList.add('d-none');
+        }
+        const dueDateTime = new Date(`${todo.dueDate}T${todo.dueTime}:00`);
+        if (dueDateTime < now) {//期限切れの場合
+            li.classList.add('text-muted', 'bg-light');
+        } else {//有効期限内の場合
+            li.classList.remove('text-muted', 'bg-light');
+        }
+        taskList.appendChild(li);
+    });
+}
+//編集/保存時のその他のボタン無効化/有効化切替関数
 function toggleAllBtns(isDisabled, editBtnId) {
     const taskBtns = document.querySelectorAll('#taskList button');
-    const btns = [addBtn, addTask, allTasksBtn, incompletedTasksBtn, completedTasksBtn, ...taskBtns];
+    const btns = [addBtn, addTaskTitle, addDueDate, addDueTime, keyword, statusSelect, sortSelect, ...taskBtns];
     btns.forEach(btn => {
         if (btn.id !== `editBtn${editBtnId}`) {
             btn.disabled = isDisabled;
@@ -60,7 +119,7 @@ function createTask(task) {
                 style="margin-top: -10px; margin-bottom: -10px; display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <div>
             <div>${task.title}</div>
-             <div style="font-size: 0.8rem; color: #6c757d;">期限：2026/10/14 11:00</div>
+             <div style="font-size: 0.8rem; color: #6c757d;">期限：${addDueDate} ${addDueTime}</div>
         </div>
             <div style="text-align: right; display: flex; gap: 5px;">
                 <button id="${isDoneBtn}" class="btn ${btnColor}" style="white-space: nowrap; width: auto;">${isCompleted}</button>
@@ -98,48 +157,8 @@ function createTask(task) {
         //ボタンの色を切り替え
         newIsDoneBtn.classList.toggle('btn-success');
         newIsDoneBtn.classList.toggle('btn-warning');
-
         //表示に関する処理
-if(statusSelect.value==='all'){
-    if(sortSelected.value==='added'){
-        
-    }else if(sortSelected.value==='dueAsc'){
-
-    }else{//sortSelected.value==='dueDesc'
-
-    }
-}else if(statusSelect.value==='incompleted'){
-}else{//statusSelect.value==='completed'
-}
-//すべてのタスク表示イベント
-allTasksBtn.addEventListener('click', () => {
-    todos.forEach(todo => {
-        const li = document.getElementById(`${todo.id}`);
-        li.classList.remove('d-none');
-    });
-});
-//未完了タスクのみ表示イベント
-incompletedTasksBtn.addEventListener('click', () => {
-    todos.forEach(todo => {
-        const li = document.getElementById(`${todo.id}`);
-        if (!todo.completed) {
-            li.classList.remove('d-none');
-        } else {
-            li.classList.add('d-none');
-        }
-    });
-});
-//完了タスクのみ表示イベント
-completedTasksBtn.addEventListener('click', () => {
-    todos.forEach(todo => {
-        const li = document.getElementById(`${todo.id}`);
-        if (todo.completed) {
-            li.classList.remove('d-none');
-        } else {
-            li.classList.add('d-none');
-        }
-    });
-});
+        updateTaskList();
     });
     //編集/保存ボタンイベント
     newEditBtn.addEventListener('click', () => {
@@ -196,8 +215,30 @@ completedTasksBtn.addEventListener('click', () => {
         strage.setItem('todos', JSON.stringify(todos));
     });
 }
-//localStrage内に保存済みのタスクを表示
-function showInitTodos() {
+
+//初期関数
+function init() {
+    //期限日で選択できる日付を制限するもの
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = String(today.getMonth() + 1).padStart(2, '0');
+    let day = String(today.getDate()).padStart(2, '0');
+    let todayStr = `${year}-${month}-${day}`;
+    dueDate.min = todayStr;
+    //期限時間に５分区切りでoptionを追加
+    for (let i = 0; i < 288; i++) {
+        const totalMinutes = i * 5;
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        const hStr = String(hours).padStart(2, '0');
+        const mStr = String(minutes).padStart(2, '0');
+        const timeText = `${hStr}:${mStr}`;
+        const option = document.createElement('option');
+        option.value = timeText;
+        option.textContent = timeText;
+        dueTime.appendChild(option);
+    }
+    //localStrage内に保存済みのタスクを表示
     todos.forEach(todo => {
         //タスクの表示
         createTask(todo);
@@ -210,23 +251,62 @@ function showInitTodos() {
         }
     });
 }
-showInitTodos();
+init();
+
 //タスク追加イベント
 addBtn.addEventListener('click', () => {
-    //タスク名が空白でない場合新タスクを追加
-    if (addTask.value.trim() !== '') {
+    //期限が過去の日時の場合
+    const now = new Date();
+    const due = new Date(`${addDueDate.value}T${addDueTime.value}:00`);
+    if (due <= now) {
+        addDueDate.value = '';
+        addDueTime.value = '';
+        alert('期限には現在時刻より後の日時を指定してください。');
+        //タスク名・期限日付・期限時間が空白でない場合新タスクを追加
+    } else if (addTaskTitle.value.trim() !== '' && addDueDate.value !== '' && addDueTime.value !== '') {
+        //空いている最小のid番号を新タスクのidとする
+        const todoIds = todos.map(todo => todo.id);
+        let newId = 0;
+        while (todoIds.includes(newId)) {
+            newId++;
+        }
+        //配列に新タスクを追加
+        todos.push({ id: newId, title: addTaskTitle.value.trim(), completed: false, dueDate: addDueDate.value, dueTime: addDueTime.value, createdAt: Date.now() });
         //localStrageに新タスクを追加
-        let newId = Date.now();
-        // , dueDate: addTaskDue.value, dueTime: addTaskDuwTime.value, createdAt
-        todos.push({ id: newId, title: addTask.value.trim(), completed: false });
         strage.setItem('todos', JSON.stringify(todos));
-        //新タスクを追加表示
-        let targetTodo = todos.find(todo => todo.id === newId);
-        createTask(targetTodo);
+        //一覧表示更新
+        const newTask = todos.find(todo => todo.id === newId);
+        createTask(newTask);
+        updateTaskListAll();
         //タスク件数を追加
         allTasksNumber.textContent = parseInt(allTasksNumber.textContent, 10) + 1;
         incompletedTasksNumber.textContent = parseInt(incompletedTasksNumber.textContent, 10) + 1;
-    }//追加タスク名が空の時はなにも起こらない
-    addTask.value = '';
-    //追加したものの表示について
+        addTaskTitle.value = '';
+        addDueDate.value = '';
+        addDueTime.value = '';
+    } else {
+        if (addTaskTitle.value.trim() === '') {//タスク名がない場合
+            addTaskTitle.value = '';
+            alert('タスク名を入力してください。');
+        } else if (addDueDate.value === '') {//期限日がない場合
+            addDueDate.value = '';
+            alert('期限日を入力してください。');
+        } else if (addDueTime.value === '') {//期限時間がない場合
+            addDueTime.value = '';
+            alert('期限時間を入力してください。');
+        }
+    }
+    addTaskTitle.value = '';
+});
+// キーワード入力イベント
+keyword.addEventListener('input', () => {
+    updateTaskList();
+});
+// 状態の選択肢変更イベント
+statusSelect.addEventListener('change', () => {
+    updateTaskList();
+});
+// 並び順の選択肢変更イベント
+sortSelect.addEventListener('change', () => {
+    updateTaskList();
 });
