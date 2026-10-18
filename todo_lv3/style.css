@@ -1,0 +1,101 @@
+body {
+    margin: 0;
+}
+
+.content {
+    margin: 60px 20%;
+}
+
+.content h1 {
+    margin-bottom: 20px;
+}
+
+.card-box {
+    border: 1px solid #bdbdbd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.card-title-custom {
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.card-box hr,
+.list hr {
+    margin-left: -20px;
+    margin-right: -20px;
+    border-color: #bebebe;
+}
+
+.number-display {
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    color: #080808;
+}
+
+.number-display p {
+    margin: 0;
+}
+
+.list {
+    border: 1px solid #a7a7a7;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.list-title {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.task {
+    margin-top: -10px;
+    margin-bottom: -10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.task-title {
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.task-due {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.task-btn-group {
+    text-align: right;
+    display: flex;
+    gap: 5px;
+}
+
+.task-btn-group .btn {
+    white-space: nowrap;
+    width: auto;
+}
+
+.task-input-space {
+    margin-bottom: 15px;
+}
+
+.row-space {
+    margin-bottom: 15px;
+}
+
+.add-btn {
+    width: 60px;
+}
+
+.number-row-space {
+    margin-bottom: 20px;
+}
