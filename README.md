@@ -1,2 +1,0 @@
-# ToDoList
-JavaScript課題

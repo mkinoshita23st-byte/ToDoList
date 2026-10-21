@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>ToDo App Lv.3</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="content">
+        <h1>ToDo App Lv.3</h1>
+        <div class="card-box">
+            <div class="card-title-custom">ToDo登録</div>
+            <hr>
+            <div class="task-input-space">
+                <span class="form-label">タスク名</span>
+                <input type="text" id="addTaskTitle" name="task" class="form-control" placeholder="タスクを入力してください"
+                    required>
+            </div>
+            <div class="row row-space">
+                <div class="col-md-6">
+                    <span class="form-label">期限日</span>
+                    <input type="date" min="" id="addDueDate" class="form-control" placeholder="年/月/日" required>
+                </div>
+                <div class="col-md-6">
+                    <span class="form-label">制限時間</span>
+                    <select id="addDueTime" class="form-select" required>
+                        <option value="">時間を選択</option>
+                    </select>
+                </div>
+            </div>
+            <button id="addBtn" class="btn btn-primary btn-sm add-btn">追加</button>
+        </div>
+
+        <div class="card-box">
+            <div class="card-title-custom">検索・絞り込み・並び替え</div>
+            <hr>
+            <div class="row row-space">
+                <div class="col-md-4">
+                    <span class="form-label">キーワード</span>
+                    <input type="text" id="keyword" class="form-control" placeholder="タスクを検索">
+                </div>
+                <div class="col-md-4">
+                    <span class="form-label">状態</span>
+                    <select id="statusSelect" class="form-select">
+                        <option value="all">すべて</option>
+                        <option value="incompleted">未完了</option>
+                        <option value="completed">完了</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <span class="form-label">並び順</span>
+                    <select id="sortSelect" class="form-select">
+                        <option value="added">追加順</option>
+                        <option value="dueAsc">期限が近い順</option>
+                        <option value="dueDesc">期限が遠い順</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row number-row-space">
+            <div class="col-md-4">
+                <div class="number-display bg-secondary bg-opacity-25">
+                    <p>全て：<span id="allTasksNumber">0</span>件</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="number-display bg-warning bg-opacity-25">
+                    <p>未完了：<span id="incompletedTasksNumber">0</span>件</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="number-display bg-success bg-opacity-25">
+                    <p>完了：<span id="completedTasksNumber">0</span>件</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="list">
+            <p class="list-title">ToDo一覧</p>
+            <ul id="taskList" class="list-unstyled"></ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
